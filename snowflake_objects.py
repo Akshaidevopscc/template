@@ -10,17 +10,14 @@ import yaml
 # Set base directory and parent directory paths
 base_directory_path = os.path.dirname(os.path.abspath(__file__))
 parent_directory_path = os.path.dirname(base_directory_path)
-parent_dir_name = os.path.basename(parent_directory_path)
+parent_dir_name = os.path.basename(os.path.dirname(base_directory_path))
 directory_name = os.path.basename(base_directory_path)
 dynamic_dag_id = f"{parent_dir_name}_{directory_name}"
 
 # Load configuration from YAML file
 yml_file_path = os.path.join(parent_directory_path, 'snowflake_ci.yml')
-if os.path.exists(yml_file_path):
-    with open(yml_file_path, 'r') as file:
-        config = yaml.safe_load(file)
-else:
-    config = {}  # Set default config if the file is missing
+with open(yml_file_path, 'r') as file:
+    config = yaml.safe_load(file)
 
 # Extract configuration variables
 SNOWFLAKE_CONN_ID = config.get('SNOWFLAKE_CONN_ID', 'DEFAULT_CONNECTION')
@@ -39,12 +36,9 @@ default_args = {
 }
 
 # Read the content of README.md
-readme_path = os.path.join(base_directory_path, 'README.md')
-if os.path.exists(readme_path):
-    with open(readme_path, 'r') as file:
-        readme_content = file.read()
-else:
-    readme_content = ""  # Default content if README.md is missing
+readme_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'README.md')
+with open(readme_path, 'r') as file:
+    readme_content = file.read()
 
 # Fetch dynamic parameters from Airflow variables
 params = {}
@@ -89,6 +83,7 @@ for subdir_name in target_subdirs:
     
     with TaskGroup(group_id=subdir_name, dag=dag) as tg:
         prev_task = None
+
         n_tasks = 0
         
         for file in sorted(os.listdir(subdir_path)):
