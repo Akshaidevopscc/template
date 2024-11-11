@@ -15,7 +15,7 @@ directory_name = os.path.basename(base_directory_path)
 dynamic_dag_id = f"{parent_dir_name}_{directory_name}"
 
 # Load configuration from YAML file
-yml_file_path = os.path.join(parent_directory_path, 'snowflake_ci.yml')
+yml_file_path = os.path.join(parent_directory_path, 'snowflake', 'snowflake_ci.yml')
 with open(yml_file_path, 'r') as file:
     config = yaml.safe_load(file)
 
