@@ -1,7 +1,6 @@
 from airflow import DAG
 from airflow.utils.task_group import TaskGroup
 from airflow.providers.snowflake.operators.snowflake import SnowflakeOperator
-from airflow.hooks.base import BaseHook
 from airflow.utils.dates import days_ago
 from airflow.models import Variable
 import os
@@ -25,9 +24,11 @@ OWNER = config.get('OWNER', 'DEFAULT_OWNER')
 TAGS = config.get('TAGS', [])
 TAGS.append(OWNER)
 
+# Commented out the connection retrieval part to avoid the error
 # Fetch Snowflake schema from the connection and folder
-extras = BaseHook.get_connection(SNOWFLAKE_CONN_ID).extra_dejson
-SNOWFLAKE_SCHEMA = extras['database'] + "." + directory_name
+# extras = BaseHook.get_connection(SNOWFLAKE_CONN_ID).extra_dejson
+# SNOWFLAKE_SCHEMA = extras['database'] + "." + directory_name
+SNOWFLAKE_SCHEMA = "DEFAULT_SCHEMA"  # Placeholder schema name
 
 # Set default arguments for the DAG
 default_args = {
