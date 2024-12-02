@@ -1,1 +1,1 @@
-snowflake ci
+snowflake ci-cd
